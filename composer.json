@@ -1,0 +1,20 @@
+{
+    "name": "owllog/mollyera",
+    "type": "project",
+    "require": {
+        "symfony/var-dumper": "^6.2",
+        "philo/laravel-blade": "^3.1"
+    },
+    "authors": [
+        {
+            "name": "Ahmed abd el rahman",
+            "email": "ahmed.meklad.news@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "config": {
+        "allow-plugins": {
+            "kylekatarnls/update-helper": true
+        }
+    }
+}
