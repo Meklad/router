@@ -3,7 +3,9 @@
     "type": "project",
     "require": {
         "symfony/var-dumper": "^6.2",
-        "philo/laravel-blade": "^3.1"
+        "philo/laravel-blade": "^3.1",
+        "vlucas/phpdotenv": "^5.5",
+        "symfony/error-handler": "^6.2"
     },
     "authors": [
         {
@@ -16,5 +18,13 @@
         "allow-plugins": {
             "kylekatarnls/update-helper": true
         }
+    },
+    "autoload": {
+        "psr-4": {
+            "Core\\": "core/"
+        },
+        "files": [
+            "core/support/helpers.php"
+        ]
     }
 }
