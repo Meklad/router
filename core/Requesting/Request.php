@@ -4,8 +4,6 @@ declare(strict_types=1);
 
 namespace Core\Requesting;
 
-use function PHPSTORM_META\map;
-
 /**
  * This class prepare the request data for usage inside the app.
  */
