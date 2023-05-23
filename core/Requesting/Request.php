@@ -34,6 +34,13 @@ class Request
     private readonly string $url;
 
     /**
+     * Clean domain without http || https || params || query string.
+     *
+     * @var string
+     */
+    private readonly string $cleanDomain;
+
+    /**
      * Full app url.
      *
      * @var string
@@ -55,6 +62,13 @@ class Request
     private readonly array $uri;
 
     /**
+     * Url Parametrs.
+     *
+     * @var array
+     */
+    private readonly array $urlParams;
+
+    /**
      * Url query string as array.
      *
      * @var array
@@ -70,12 +84,14 @@ class Request
     public static function bootstrapRequestComponents(array $server): self
     {
         $request = new self;
-        $request->setIsSecure(isset($server["HTTPS"]) ?? $server["HTTPS"])
+        $request->setIsSecure(isset($server["HTTPS"]) ? $server["HTTPS"] : "")
                 ->setUrl($server["HTTP_HOST"])
                 ->setFullUrl($server["REQUEST_URI"])
                 ->setHttpMethod($server["REQUEST_METHOD"])
-                ->setUri($server["REDIRECT_URL"])
-                ->setQueryString($server["QUERY_STRING"]);
+                ->setCleanDomain($server["SERVER_NAME"])
+                ->setUri(isset($server["REDIRECT_URL"]) ? $server["REDIRECT_URL"] : "")
+                ->setQueryString($server["QUERY_STRING"])
+                ->setUrlParams($server["REDIRECT_URL"]);
         return $request;
     }
 
@@ -140,7 +156,7 @@ class Request
      */
     public function setUri(string $uri): self
     {
-        if($uri == "/" || $uri == "" || $uri == null) {
+        if($uri == "/" || $uri == "" || $uri == null || gettype($uri) == "boolean") {
             $this->uri = [];
         } else {
             $this->uri = explode("/", parse_url(ltrim($uri, "/"))["path"]);
@@ -156,7 +172,6 @@ class Request
      */
     public function setQueryString(string|bool $queryString): self
     {
-        $params = [];
         if($queryString == "") {
             $this->queryString = [];
         } else {
@@ -180,10 +195,61 @@ class Request
 
         array_map(function ($element) use(&$container) {
             $tempElement = explode("=", $element);
-            $container[$tempElement[0]] = $tempElement[1];
+            if(isset($tempElement[0]) && isset($tempElement[1])) {
+                $container[$tempElement[0]] = $tempElement[1];
+            }
         }, $explodeQueryString);
 
         return $container;
+    }
+
+    /**
+     * Convert url parameters to array.
+     *
+     * @param string $params
+     * @return self
+     */
+    private function setUrlParams(string $params): self
+    {
+        if($params == "") {
+            $this->urlParams = []; 
+        } else {
+            $this->urlParams = $this->storeUrlParamsAsArray($params);
+        }
+        return $this;
+    }
+
+    /**
+     * Convert url parameters to array.
+     *
+     * @param string $params
+     * @return array
+     */
+    private function storeUrlParamsAsArray(string $params): array
+    {
+        $container = [];
+        
+        $tempUrlParams = explode("/", trim($params));
+
+        array_map(function ($element) use(&$container) {
+            if(!empty($element)) {
+                $container[] = $element;
+            }
+        }, $tempUrlParams);
+
+        return $container;
+    }
+
+    /**
+     * Set clean domain.
+     *
+     * @param string $domain
+     * @return self
+     */
+    public function setCleanDomain(string $domain): self
+    {
+        $this->cleanDomain = $domain;
+        return $this;
     }
 
     /**
@@ -244,5 +310,25 @@ class Request
     public function getQueryString(): array
     {
         return $this->queryString;
+    }
+
+    /**
+     * Get the request url params.
+     *
+     * @return array
+     */
+    public function getUrlParams(): array
+    {
+        return $this->urlParams;
+    }
+
+    /**
+     * Clean domain without http || https || params || query string.
+     *
+     * @return string
+     */
+    public function getCleanDomain(): string
+    {
+        return $this->cleanDomain;
     }
 }
