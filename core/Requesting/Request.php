@@ -57,9 +57,9 @@ class Request
     /**
      * Uri full string.
      *
-     * @var array
+     * @var string
      */
-    private readonly array $uri;
+    private readonly string $uri;
 
     /**
      * Url Parametrs.
@@ -89,7 +89,7 @@ class Request
                 ->setFullUrl($server["REQUEST_URI"])
                 ->setHttpMethod($server["REQUEST_METHOD"])
                 ->setCleanDomain($server["SERVER_NAME"])
-                ->setUri(isset($server["REDIRECT_URL"]) ? $server["REDIRECT_URL"] : "")
+                ->setUri(isset($server["REQUEST_URI"]) ? $server["REQUEST_URI"] : "")
                 ->setQueryString($server["QUERY_STRING"])
                 ->setUrlParams($server["REDIRECT_URL"]);
         return $request;
@@ -159,7 +159,7 @@ class Request
         if($uri == "/" || $uri == "" || $uri == null || gettype($uri) == "boolean") {
             $this->uri = [];
         } else {
-            $this->uri = explode("/", parse_url(ltrim($uri, "/"))["path"]);
+            $this->uri = $uri;
         }
         return $this;
     }
@@ -295,9 +295,9 @@ class Request
     /**
      * Get the request uri.
      *
-     * @return array
+     * @return string
      */
-    public function getUri(): array
+    public function getUri(): string
     {
         return $this->uri;
     }
