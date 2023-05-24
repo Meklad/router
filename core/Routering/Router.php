@@ -30,7 +30,10 @@ class Router
      *
      * @param Request $requst
      */
-    public function __construct(private Request $requst){}
+    public function __construct(
+        private Request $requst,
+        private Matcher $matcher
+    ){}
 
     /**
      * Set a route called by get http method.
@@ -80,7 +83,7 @@ class Router
      */
     public function load()
     {
-        $matches = Matcher::match($this->routes, $this->requst);
+        $matches = $this->matcher->match($this->routes, $this->requst);
         
         if(empty($matches)) {
             return view("404", ["exception" => "The Requested Route Is Not Found..."]);

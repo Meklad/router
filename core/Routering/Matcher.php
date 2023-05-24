@@ -18,27 +18,71 @@ class Matcher
      * @param Request $request
      * @return void
      */
-    public static function match(array $routes, Request $request): array
+    public function match(array $routes, Request $request): array
     {
         $matchedRoute = null;
-
         $matches = [];
-        
+        $urlParts = parse_url($request->getUri());
+    
+        $this->matchUriParams($routes, $urlParts['path'], $matchedRoute, $matches);
+        $this->filterQueryString($matchedRoute, $urlParts['query'], $matches);
+
+        return $matches;
+    }
+
+    /**
+     * Match url parameters.
+     *
+     * @param array $routes
+     * @param string $path
+     * @param null|string $matchedRoute
+     * @param array $matches
+     * @return void
+     */
+    private function matchUriParams(array $routes, string $path, null|string &$matchedRoute, array &$matches): void
+    {
         foreach ($routes as $routePattern) {
             $routePattern = $routePattern["path"];
-
+    
             if (empty($routePattern) || strpos($routePattern, '#') === 0) {
                 continue;
             }
-
+    
             $routePattern = str_replace('{id}', '(\d+)', $routePattern);
-            
-            if (preg_match("~^" . $routePattern . "$~", $request->getUri(), $matches)) {
+    
+            if (preg_match("~^" . $routePattern . "$~", $path, $matches)) {
                 $matchedRoute = $routePattern;
                 break;
             }
         }
+    }
 
-        return $matches;
+    /**
+     * Filter request query. string
+     *
+     * @param null|string $matchedRoute
+     * @param null|string $queryString
+     * @param array $matches
+     * @return void
+     */
+    private function filterQueryString(null|string &$matchedRoute, null|string &$queryString, array &$matches): void
+    {
+        if ($matchedRoute !== null) {
+            if($queryString != null) {
+                parse_str($queryString, $query);
+                $sanitizedQuery = [];
+        
+                foreach ($query as $key => $value) {
+                    $sanitizedKey = urldecode($key);
+                    $sanitizedValue = urldecode($value);
+            
+                    if ($sanitizedKey !== '' && $sanitizedValue !== '') {
+                        $sanitizedQuery[$sanitizedKey] = $sanitizedValue;
+                    }
+                }
+            
+                $matches['query'] = $sanitizedQuery;
+            }
+        }
     }
 }
