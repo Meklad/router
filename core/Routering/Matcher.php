@@ -18,15 +18,20 @@ class Matcher
      * @param Request $request
      * @return void
      */
-    public function match(array $routes, Request $request): array
+    public function match(array $routes, Request $request): mixed
     {
         $matchedRoute = null;
         $matches = [];
         $urlParts = parse_url($request->getUri());
     
-        $this->matchUriParams($routes, $urlParts['path'], $matchedRoute, $matches);
+        $originalRoute = $this->matchUriParams($routes, $urlParts['path'], $matchedRoute, $matches);
         $this->filterQueryString($matchedRoute, $urlParts['query'], $matches);
+        
+        if(empty($matches["params"])) {
+            return null;
+        }
 
+        $matches["route"] = $originalRoute;
         return $matches;
     }
 
@@ -39,9 +44,12 @@ class Matcher
      * @param array $matches
      * @return void
      */
-    private function matchUriParams(array $routes, string $path, null|string &$matchedRoute, array &$matches): void
+    private function matchUriParams(array $routes, string $path, null|string &$matchedRoute, array &$matches)
     {
+        $originalRoute = null;
+
         foreach ($routes as $routePattern) {
+            $originalRoute = $routePattern;
             $routePattern = $routePattern["path"];
     
             if (empty($routePattern) || strpos($routePattern, '#') === 0) {
@@ -50,9 +58,9 @@ class Matcher
     
             $routePattern = str_replace('{id}', '(\d+)', $routePattern);
     
-            if (preg_match("~^" . $routePattern . "$~", $path, $matches)) {
+            if (preg_match("~^" . $routePattern . "$~", $path, $matches["params"])) {
                 $matchedRoute = $routePattern;
-                break;
+                return $originalRoute;
             }
         }
     }

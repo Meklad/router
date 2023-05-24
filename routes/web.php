@@ -20,16 +20,16 @@ $router->get("/contact-us", function() {
     echo "Contact Us";
 });
 
-$router->get("/users/{id}", function(string $username) {
-    echo "Username Is: " . $username;
+$router->get("/users/{id}", function(string $id) {
+    echo "ID: " . $id;
 });
 
-$router->get("/users/{id}/edit", function(string $username) {
-    echo "Username Is: " . $username;
+$router->get("/users/{id}/edit", function(string $id) {
+    echo "ID: " . $id;
 });
 
-$router->post("/users/{id}", function(string $username) {
-    echo "Username Is: " . $username;
+$router->post("/users/{id}", function(string $id) {
+    echo "ID: " . $id;
 });
 
 $router->load();

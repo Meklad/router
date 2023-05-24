@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Core\Routering;
 
 use Core\Requesting\Request;
+use App\Exceptions\RouteNotFoundException;
 
 class Router
 {
@@ -89,7 +90,31 @@ class Router
             return view("404", ["exception" => "The Requested Route Is Not Found..."]);
             exit;
         }
+        
+        $route = $matches["route"];
+        $callback = $route["callback"];
+        $methodParam = isset($matches["params"][1]) ? $matches["params"][1] : null;
 
-        dd($matches);
+        try {
+            if(!$callback) {
+                throw new RouteNotFoundException();
+            }
+
+            if(is_array($callback)) {
+                if(class_exists($callback[0])) {
+                    if(method_exists($callback[0], $callback[1])) {
+                        $controller = new $callback[0];
+                        $method = $callback[1];
+                        $callback = [$controller,$method];
+                    }
+                }
+            }
+
+            if(is_callable($callback)) {
+                call_user_func($callback, $methodParam);
+            }
+        } catch(RouteNotFoundException $e) {
+            return view("404", ["exception" => $e->getMessage()]);
+        }
     }
 }
