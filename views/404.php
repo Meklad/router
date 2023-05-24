@@ -7,9 +7,13 @@
     <title>404 Not Found</title>
 </head>
 <body>
-    <h1 style="color: red;">404 Not Found</h1>
-    <p>
-        <strong style="color: red;"><?= $exception ?></strong>
-    </p>
+    <div style="padding-top: 20%;">
+        <center>
+            <h1 style="color: red;">404 Not Found</h1>
+            <p>
+                <strong style="color: blue;"><?= $exception ?></strong>
+            </p>
+        </center>
+    </div>
 </body>
 </html>
