@@ -91,7 +91,7 @@ class Request
                 ->setCleanDomain($server["SERVER_NAME"])
                 ->setUri(isset($server["REQUEST_URI"]) ? $server["REQUEST_URI"] : "")
                 ->setQueryString($server["QUERY_STRING"])
-                ->setUrlParams($server["REDIRECT_URL"]);
+                ->setUrlParams(isset($server["REDIRECT_URL"]) ? $server["REDIRECT_URL"] : "");
         return $request;
     }
 
@@ -157,7 +157,7 @@ class Request
     public function setUri(string $uri): self
     {
         if($uri == "/" || $uri == "" || $uri == null || gettype($uri) == "boolean") {
-            $this->uri = [];
+            $this->uri = "/";
         } else {
             $this->uri = $uri;
         }

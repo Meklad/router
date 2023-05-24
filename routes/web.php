@@ -1,9 +1,10 @@
 <?php
 
-use Core\Router;
+use Core\Routering\Router;
+use Core\Requesting\Request;
 use App\Controllers\HomeController;
 
-$router = new Router();
+$router = new Router(Request::bootstrapRequestComponents($_SERVER));
 
 $router->get("/", [HomeController::class, "index"]);
 
@@ -15,8 +16,16 @@ $router->get("/contact-us", function() {
     echo "Contact Us";
 });
 
-$router->get("/users/1", function(string $username) {
+$router->get("/users/{id}", function(string $username) {
     echo "Username Is: " . $username;
 });
 
-$router->run();
+$router->get("/users/{id}/edit", function(string $username) {
+    echo "Username Is: " . $username;
+});
+
+$router->post("/users/{id}", function(string $username) {
+    echo "Username Is: " . $username;
+});
+
+$router->load();

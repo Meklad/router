@@ -4,70 +4,89 @@ declare(strict_types=1);
 
 namespace Core\Routering;
 
-use App\Exceptions\RouteNotFoundException;
 use Core\Requesting\Request;
 
 class Router
 {
+    /**
+     * GET http method.
+     */
+    private const GET_HTTP_METHOD = "GET";
+
+    /**
+     * POST http method.
+     */
+    private const POST_HTTP_METHOD = "POST";
+
+    /**
+     * Array of routes imported from web.php
+     *
+     * @var array
+     */
     private array $routes;
 
+    /**
+     * Router Constructor.
+     *
+     * @param Request $requst
+     */
     public function __construct(private Request $requst){}
 
-    public function get(string $path, callable|array $callback)
+    /**
+     * Set a route called by get http method.
+     *
+     * @param string $path
+     * @param callable|array $callback
+     * @return void
+     */
+    public function get(string $path, callable|array $callback): void
+    {
+        $this->setRoute($path, $callback, self::GET_HTTP_METHOD);
+    }
+
+    /**
+     * Set a route called by post http method.
+     *
+     * @param string $path
+     * @param callable|array $callback
+     * @return void
+     */
+    public function post(string $path, callable|array $callback): void
+    {
+        $this->setRoute($path, $callback, self::POST_HTTP_METHOD);
+    }
+
+    /**
+     * Set the given route that came from the request.
+     *
+     * @param string $path
+     * @param callable|array $callback
+     * @param string $httpMethod
+     * @return void
+     */
+    private function setRoute(string $path, callable|array $callback, string $httpMethod): void
     {
         $this->routes[$path] = [
             "path" => $path,
-            "http_method" => "GET",
+            "http_method" => $httpMethod,
             "callback" => $callback
         ];
     }
 
-    public function post(string $path, callable|array $callback)
+    /**
+     * Load the callback wither if it function or controller method.
+     *
+     * @return void
+     */
+    public function load()
     {
-        $this->routes[$path] = [
-            "path" => $path,
-            "http_method" => "GET",
-            "callback" => $callback
-        ];
-    }
-
-    public function run()
-    {
-        $matches = $this->match();
+        $matches = Matcher::match($this->routes, $this->requst);
         
-        if(count($matches) === 0) {
+        if(empty($matches)) {
             return view("404", ["exception" => "The Requested Route Is Not Found..."]);
             exit;
         }
 
         dd($matches);
-    }
-
-    public function match()
-    {            
-        $matchedRoute = null;
-
-        $matches = [];
-
-        foreach ($this->routes as $routePattern) {
-            $routePattern = $routePattern["path"];
-
-            if (empty($routePattern) || strpos($routePattern, '#') === 0 || $routePattern === "/") {
-                continue;
-            }
-
-            $routePattern = str_replace('{id}', '(\d+)', $routePattern);
-            
-            if (preg_match("~^" . $routePattern . "$~", $this->requst->getUri(), $matches)) {
-                $matchedRoute = $routePattern;
-                break;
-            }
-        }
-
-        if ($matchedRoute !== null) {
-            return $matches;
-        }
-
-        return [];
     }
 }
