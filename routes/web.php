@@ -6,7 +6,7 @@ use App\Controllers\HomeController;
 use Core\Routering\Matcher;
 
 $router = new Router(
-    Request::bootstrapRequestComponents($_SERVER),
+    new Request,
     new Matcher
 );
 

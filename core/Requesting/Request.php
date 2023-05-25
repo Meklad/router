@@ -76,15 +76,22 @@ class Request
     private readonly array $queryString;
 
     /**
+     * Request Constructor.
+     */
+    public function __construct()
+    {
+        $this->bootstrapRequestComponents($_SERVER);
+    }
+
+    /**
      * Factory method that bootstrap the request.
      *
      * @param array $server
      * @return self
      */
-    public static function bootstrapRequestComponents(array $server): self
+    private function bootstrapRequestComponents(array $server): self
     {
-        $request = new self;
-        $request->setIsSecure(isset($server["HTTPS"]) ? $server["HTTPS"] : "")
+        $this->setIsSecure(isset($server["HTTPS"]) ? $server["HTTPS"] : "")
                 ->setUrl($server["HTTP_HOST"])
                 ->setFullUrl($server["REQUEST_URI"])
                 ->setHttpMethod($server["REQUEST_METHOD"])
@@ -92,7 +99,7 @@ class Request
                 ->setUri(isset($server["REQUEST_URI"]) ? $server["REQUEST_URI"] : "")
                 ->setQueryString($server["QUERY_STRING"])
                 ->setUrlParams(isset($server["REDIRECT_URL"]) ? $server["REDIRECT_URL"] : "");
-        return $request;
+        return $this;
     }
 
     /**
