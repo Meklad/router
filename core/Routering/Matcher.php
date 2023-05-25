@@ -8,6 +8,10 @@ use Core\Requesting\Request;
 
 class Matcher
 {
+    public function __construct()
+    {
+        
+    }
     /**
      * Match the incoming uri from the client request with the routes.
      * 

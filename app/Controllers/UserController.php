@@ -4,7 +4,9 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-class UserController
+use App\Controllers\Controller;
+
+class UserController  extends Controller
 {
     public function show(int $id)
     {

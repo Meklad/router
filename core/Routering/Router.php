@@ -103,7 +103,7 @@ class Router
             if(is_array($callback)) {
                 if(class_exists($callback[0])) {
                     if(method_exists($callback[0], $callback[1])) {
-                        $controller = new $callback[0];
+                        $controller = app()->container->get($callback[0]);
                         $method = $callback[1];
                         $callback = [$controller,$method];
                     }
