@@ -120,7 +120,7 @@ class Request
         } else {
             $this->url = $url;
         }
-        
+
         return $this;
     }
 
@@ -289,7 +289,7 @@ class Request
      */
     public function getHttpMethod(): string
     {
-        return $this->fullUrl;
+        return $this->httpMethod;
     }
 
     /**

@@ -27,6 +27,13 @@ class Router
     private array $routes;
 
     /**
+     * Array of routes imported from web.php without callback.
+     *
+     * @var array
+     */
+    private array $routesWithoutCallback;
+
+    /**
      * Router Constructor.
      *
      * @param Request $requst
@@ -75,6 +82,11 @@ class Router
             "http_method" => $httpMethod,
             "callback" => $callback
         ];
+
+        $this->routesWithoutCallback[$path] = [
+            "path" => $path,
+            "http_method" => $httpMethod
+        ];
     }
 
     /**
@@ -116,5 +128,25 @@ class Router
         } catch(RouteNotFoundException $e) {
             return view("404", ["exception" => $e->getMessage()]);
         }
+    }
+
+    /**
+     * Return array of registerd routes.
+     *
+     * @return array
+     */
+    public function getRoutes(): array
+    {
+        return $this->routes;
+    }
+
+    /**
+     * Return array of registerd routes.
+     *
+     * @return array
+     */
+    public function getRoutesWithoutCallaback(): array
+    {
+        return $this->routesWithoutCallback;
     }
 }
