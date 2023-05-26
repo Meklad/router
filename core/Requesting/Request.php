@@ -80,9 +80,9 @@ class Request implements RequestInterface
     /**
      * Request Constructor.
      */
-    public function __construct()
+    public function __construct(private array $server)
     {
-        $this->bootstrapRequestComponents($_SERVER);
+        $this->bootstrapRequestComponents($server);
     }
 
     /**

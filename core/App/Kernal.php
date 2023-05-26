@@ -21,7 +21,9 @@ class Kernal
      */
     public function __construct(public Container $container)
     {
-        $this->container->set(RequestInterface::class, Request::class);
+        $this->container->set(RequestInterface::class, function () {
+            return new Request($_SERVER);
+        });
     }
 
     /**

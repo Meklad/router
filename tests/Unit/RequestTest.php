@@ -9,6 +9,7 @@ use Core\Routering\Matcher;
 use Core\Requesting\Request;
 use PHPUnit\Framework\TestCase;
 use App\Controllers\HomeController;
+use Core\Requesting\RequestInterface;
 
 class RequestTest extends TestCase
 {
@@ -17,11 +18,9 @@ class RequestTest extends TestCase
      *
      * @return Request
      */
-    private function createNewRequest(): Request
+    private function createNewRequest(): RequestInterface
     {
-        return Request::bootstrapRequestComponents(
-            $this->simulateServerGlobalVar()
-        );
+        return new Request($this->simulateServerGlobalVar());
     }
 
     /**

@@ -10,6 +10,7 @@ use Core\App\{
 require_once __DIR__ . "/../vendor/autoload.php";
 
 Dotenv\Dotenv::createUnsafeImmutable(__DIR__ . '/../')->load();
-$container = new Container;
-$app = new Kernal($container);
+
+$app = new Kernal(new Container);
+
 $app->boot();
