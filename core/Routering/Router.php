@@ -32,7 +32,7 @@ class Router
      *
      * @var array
      */
-    private array $routesWithoutCallback;
+    public array $routesWithoutCallback;
 
     /**
      * Router Constructor.
