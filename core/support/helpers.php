@@ -1,7 +1,5 @@
 <?php
 
-use App\Exceptions\ViewNotFoundException;
-
 if(!function_exists("env")) {
     /**
      * To get value form .env file.
@@ -25,8 +23,18 @@ if(!function_exists("view")) {
         try {
             extract($args);
             require_once __DIR__ . "/../../views/" . $path . ".php";
-        } catch(ViewNotFoundException $e) {
+        } catch(\App\Exceptions\ViewNotFoundException $e) {
             return view("404", ["exception" => $e->getMessage()]);
         }
+    }
+}
+
+if(!function_exists("app")) {
+    /**
+     * Return app class aka kernal.
+     */
+    function app()
+    {
+        return new Core\App\Kernal(new \Core\App\Container);
     }
 }

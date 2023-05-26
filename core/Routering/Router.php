@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Routering;
 
-use Core\Requesting\Request;
+use Core\Routering\Matcher;
+use Core\Requesting\RequestInterface;
 use App\Exceptions\RouteNotFoundException;
 
 class Router
@@ -36,10 +37,11 @@ class Router
     /**
      * Router Constructor.
      *
-     * @param Request $requst
+     * @param RequestInterface $requst
+     * @param Matcher $matcher
      */
     public function __construct(
-        private Request $requst,
+        private RequestInterface $requst,
         private Matcher $matcher
     ){}
 
@@ -115,7 +117,7 @@ class Router
             if(is_array($callback)) {
                 if(class_exists($callback[0])) {
                     if(method_exists($callback[0], $callback[1])) {
-                        $controller = new $callback[0];
+                        $controller = app()->container->get($callback[0]);
                         $method = $callback[1];
                         $callback = [$controller,$method];
                     }

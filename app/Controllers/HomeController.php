@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace App\Controllers;
 
-class HomeController
-{
+use Core\Requesting\Request;
+
+class HomeController extends Controller
+{    
     public function index()
     {
-        echo "Homepage";
+        return view("home");
     }
 }
