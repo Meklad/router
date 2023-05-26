@@ -35,6 +35,6 @@ if(!function_exists("app")) {
      */
     function app()
     {
-        return new Core\App\Kernal;
+        return new Core\App\Kernal(new \Core\App\Container);
     }
 }

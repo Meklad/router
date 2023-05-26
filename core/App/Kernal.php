@@ -5,11 +5,9 @@ declare(strict_types=1);
 namespace Core\App;
 
 use Core\App\Container;
+use Core\Routering\Router;
 use Core\Requesting\Request;
-use Core\Routering\{
-    Router,
-    Matcher
-};
+use Core\Requesting\RequestInterface;
 
 /**
  * This class boot the app.
@@ -17,29 +15,13 @@ use Core\Routering\{
 class Kernal
 {
     /**
-     * DI-Container
-     *
-     * @var Container
-     */
-    public Container $container;
-
-    /**
      * Kernal Constructor.
+     * 
+     * @param Container $container
      */
-    public function __construct()
+    public function __construct(public Container $container)
     {
-        $this->container = new Container();
-
-        $this->container->set(Router::class, function(Container $container) {
-            return new Router(
-                $container->get(Request::class),
-                $container->get(Matcher::class)
-            );
-        });
-
-        $this->container->set(Request::class, fn() => new Request);
-
-        $this->container->set(Matcher::class, fn() => new Matcher);
+        $this->container->set(RequestInterface::class, Request::class);
     }
 
     /**

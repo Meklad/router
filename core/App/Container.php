@@ -40,13 +40,14 @@ class Container implements ContainerInterface
     {
         if($this->has($id)) {
             $entry = $this->entries[$id];
-            return $entry($this);
-        } else {
-            return $this->resolve($id);
+            
+            if(is_callable($entry)) {
+                return $entry($this);
+            }
+            $id = $entry;
         }
 
-
-        throw new ContainerNotFoundException("Class " . $id . " has no bindings in  the service container.");
+        return $this->resolve($id);
     }
 
     /**
@@ -72,7 +73,7 @@ class Container implements ContainerInterface
      * @param callable $concrete
      * @return void
      */
-    public function set(string $id, callable $concrete)
+    public function set(string $id, callable|string $concrete)
     {
         $this->entries[$id] = $concrete;
     }
@@ -123,7 +124,7 @@ class Container implements ContainerInterface
         return array_map(function(ReflectionParameter $parameter) use($id) {
             $paramName = $parameter->getName();
             $paramType = $parameter->getType();
-            
+
             if(!$paramType) {
                 throw new ContainerIsNotInstantiableException("Failed to resolve class {$id} because parameter {$paramName} is missing a type hint.");
             }

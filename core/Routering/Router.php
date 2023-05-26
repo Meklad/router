@@ -4,7 +4,8 @@ declare(strict_types=1);
 
 namespace Core\Routering;
 
-use Core\Requesting\Request;
+use Core\Routering\Matcher;
+use Core\Requesting\RequestInterface;
 use App\Exceptions\RouteNotFoundException;
 
 class Router
@@ -29,10 +30,11 @@ class Router
     /**
      * Router Constructor.
      *
-     * @param Request $requst
+     * @param RequestInterface $requst
+     * @param Matcher $matcher
      */
     public function __construct(
-        private Request $requst,
+        private RequestInterface $requst,
         private Matcher $matcher
     ){}
 

@@ -4,10 +4,12 @@ declare(strict_types=1);
 
 namespace Core\Requesting;
 
+use Core\Requesting\RequestInterface;
+
 /**
  * This class prepare the request data for usage inside the app.
  */
-class Request
+class Request implements RequestInterface
 {
     /**
      * Not Secured Http connection.
@@ -89,7 +91,7 @@ class Request
      * @param array $server
      * @return self
      */
-    private function bootstrapRequestComponents(array $server): self
+    public function bootstrapRequestComponents(array $server): self
     {
         $this->setIsSecure(isset($server["HTTPS"]) ? $server["HTTPS"] : "")
                 ->setUrl($server["HTTP_HOST"])

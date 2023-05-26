@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace Core\Routering;
 
-use Core\Requesting\Request;
+use Core\Requesting\RequestInterface;
 
 class Matcher
 {
@@ -22,7 +22,7 @@ class Matcher
      * @param Request $request
      * @return void
      */
-    public function match(array $routes, Request $request): mixed
+    public function match(array $routes, RequestInterface $request): mixed
     {
         $matchedRoute = null;
         $matches = [];
